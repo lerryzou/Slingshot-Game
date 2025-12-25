@@ -5,6 +5,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { getStrategicHint, TargetCandidate } from '../services/geminiService';
+import { playSound } from '../services/audioService';
 import { Point, Bubble, Particle, BubbleColor, DebugInfo } from '../types';
 import { Loader2, Trophy, BrainCircuit, Play, MousePointerClick, Eye, Terminal, Clock, AlertTriangle, Target, Lightbulb, Monitor } from 'lucide-react';
 
@@ -276,7 +277,12 @@ const GeminiSlingshot: React.FC = () => {
       const multiplier = matches.length > 3 ? 1.5 : 1.0;
       scoreRef.current += Math.floor(points * multiplier);
       setScore(scoreRef.current);
+      
+      playSound('match'); // Sound Effect
+
       return true;
+    } else {
+        playSound('pop'); // Hit sound without match
     }
     return false;
   };
@@ -485,6 +491,9 @@ const GeminiSlingshot: React.FC = () => {
                     x: dx * velocityMultiplier,
                     y: dy * velocityMultiplier
                 };
+                
+                playSound('shoot'); // Sound Effect
+
             } else {
                 ballPos.current = { ...anchorPos.current };
             }
@@ -865,7 +874,7 @@ const GeminiSlingshot: React.FC = () => {
                         return (
                             <button
                                 key={color}
-                                onClick={() => setSelectedColor(color)}
+                                onClick={() => { setSelectedColor(color); playSound('click'); }}
                                 className={`relative w-14 h-14 rounded-full transition-all duration-300 transform flex items-center justify-center
                                     ${isSelected ? 'scale-110 ring-4 ring-white/50 z-10' : 'opacity-80 hover:opacity-100 hover:scale-105'}
                                 `}
